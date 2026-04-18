@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenith.ai | The AI Placement Officer</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #6366f1; 
+            --primary-glow: rgba(99, 102, 241, 0.5);
+            --secondary: #0ea5e9; 
+            --accent: #10b981; 
+            --bg: #030308; 
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --text-main: #ffffff;
+            --text-dim: #94a3b8;
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; scroll-behavior: smooth; }
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* --- ACCESSIBILITY --- */
+        a:focus, button:focus { outline: 2px solid var(--primary); outline-offset: 4px; }
+        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }
+
+        /* --- BACKGROUND BLOBS --- */
+        .blob {
+            position: fixed;
+            width: 60vw; height: 60vw;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, transparent 70%);
+            z-index: -1;
+            filter: blur(80px);
+            pointer-events: none;
+            border-radius: 50%;
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            position: fixed;
+            top: 0; width: 100%;
+            padding: 1rem 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(3, 3, 8, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            z-index: 1000;
+        }
+        .logo { font-size: 1.4rem; font-weight: 800; text-decoration: none; color: white; display: flex; align-items: center; gap: 12px; }
+        .logo-icon { width: 32px; height: 32px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 8px; box-shadow: 0 0 20px var(--primary-glow); }
+        .nav-links { display: flex; gap: 2rem; list-style: none; }
+        .nav-links a { text-decoration: none; color: var(--text-dim); font-size: 0.9rem; font-weight: 600; transition: var(--transition); }
+        .nav-links a:hover { color: var(--primary); }
+        .cta-nav { background: var(--primary); color: white; padding: 10px 24px; border-radius: 12px; font-weight: 700; border: none; cursor: pointer; transition: var(--transition); font-size: 0.9rem; }
+        .cta-nav:hover { transform: translateY(-2px); box-shadow: 0 8px 25px var(--primary-glow); }
+
+        /* --- HERO SECTION --- */
+        section { padding: 100px 8%; position: relative; }
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding-top: 120px;
+        }
+        .hero-badge {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            padding: 6px 16px;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .hero h1 { font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 800; letter-spacing: -2px; line-height: 1.1; margin-bottom: 1.5rem; }
+        .hero h1 span { background: linear-gradient(90deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { max-width: 800px; color: var(--text-dim); font-size: 1.1rem; margin-bottom: 3rem; }
+        .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+
+        /* --- PROBLEM STATEMENT SECTION --- */
+        .problem-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 5rem;
+        }
+        .problem-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+            padding: 3rem 2rem;
+            border-radius: 28px;
+            border: 1px solid var(--glass-border);
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+        .problem-card::before {
+            content: ""; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--primary);
+        }
+        .problem-card.solution::before { background: var(--accent); }
+        .problem-card h3 { font-size: 1.5rem; margin-bottom: 1rem; }
+        .problem-card p { font-size: 0.95rem; color: var(--text-dim); }
+
+        /* --- FEATURES SECTION --- */
+        .section-header { text-align: center; max-width: 800px; margin: 0 auto 4rem; }
+        .section-header h2 { font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; margin-bottom: 1rem; }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        .feature-card {
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            padding: 2.5rem;
+            border-radius: 24px;
+            transition: var(--transition);
+        }
+        .feature-card:hover { transform: translateY(-10px); background: rgba(255,255,255,0.05); border-color: var(--primary); }
+        .f-icon { width: 48px; height: 48px; background: var(--primary); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 1.5rem; }
+
+        /* --- VISUAL SHOWCASE (DASHBOARD) --- */
+        .showcase-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 4rem;
+            align-items: center;
+        }
+        .ui-preview {
+            background: #080810;
+            border: 8px solid #1a1a25;
+            border-radius: 32px;
+            padding: 2.5rem;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+        }
+        .stats-bar { height: 8px; background: rgba(255,255,255,0.05); border-radius: 10px; margin: 12px 0; overflow: hidden; }
+        .stats-progress { height: 100%; background: var(--primary); border-radius: 10px; }
+
+        /* --- BUSINESS MODEL / PARTNERS --- */
+        .model-section {
+            background: rgba(255,255,255,0.02);
+            border-radius: 40px;
+            padding: 4rem;
+            border: 1px solid var(--glass-border);
+            margin-top: 4rem;
+        }
+        .model-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 3rem;
+        }
+        .model-item h4 { color: var(--primary); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+
+        /* --- TESTIMONIALS --- */
+        .testi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        .testi-card {
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            padding: 2rem;
+            border-radius: 20px;
+        }
+        .testi-user { display: flex; align-items: center; gap: 12px; margin-top: 1.5rem; }
+        .avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem; }
+
+        /* --- FOOTER --- */
+        footer { padding: 80px 8% 40px; border-top: 1px solid var(--glass-border); background: #010105; }
+        .footer-grid { display: grid; grid-template-columns: 2fr repeat(3, 1fr); gap: 4rem; }
+        .footer-col h4 { margin-bottom: 1.5rem; font-size: 1rem; }
+        .footer-col ul { list-style: none; }
+        .footer-col li { margin-bottom: 10px; }
+        .footer-col a { color: var(--text-dim); text-decoration: none; font-size: 0.9rem; transition: 0.3s; }
+        .footer-col a:hover { color: var(--primary); }
+        .social-links { display: flex; gap: 15px; margin-top: 20px; }
+        .social-icon { width: 32px; height: 32px; background: rgba(255,255,255,0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: var(--text-dim); text-decoration: none; }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 1024px) {
+            .showcase-grid { grid-template-columns: 1fr; gap: 2rem; }
+            .model-section { padding: 2rem; }
+        }
+        @media (max-width: 768px) {
+            nav .nav-links { display: none; }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+            section { padding: 60px 6%; }
+        }
+
+        /* --- ANIMATIONS --- */
+        .reveal { opacity: 0; transform: translateY(30px); transition: var(--transition); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body>
+
+    <div class="blob" style="top: -10vw; left: -10vw;"></div>
+
+    <nav>
+        <a href="#" class="logo">
+            <div class="logo-icon"></div>
+            Zenith.ai
+        </a>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#problem">The Vision</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#dashboard">Dashboard</a></li>
+        </ul>
+        <button class="cta-nav">Student Login</button>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="hero" id="home">
+        <div class="hero-badge">Solving the Fragmented Placement Crisis</div>
+        <h1>Personalized <span>Placement Officers</span> for Every Student.</h1>
+        <p>India produces millions of graduates annually, yet personalized career support remains unscalable. Zenith.ai leverages LLMs to automate resume analysis, interview training, and job matching at scale.</p>
+        <div class="hero-btns">
+            <button class="cta-nav" style="padding: 16px 40px;">Analyze My Resume</button>
+            <button style="background: transparent; color: white; border: 1px solid var(--glass-border); padding: 16px 40px; border-radius: 12px; font-weight: 700; cursor: pointer;">College Partnership</button>
+        </div>
+
+        <!-- PROBLEM & SOLUTION SYNOPSIS -->
+        <div class="problem-container" id="problem">
+            <div class="problem-card reveal">
+                <h3>The Problem</h3>
+                <p>Millions struggle with resume building and job discovery. Colleges lack the bandwidth to provide 1:1 mentorship to every single student, leading to missed opportunities.</p>
+            </div>
+            <div class="problem-card solution reveal">
+                <h3>The Zenith Solution</h3>
+                <p>An AI Placement Agent that acts as a 24/7 personalized officer—providing instant resume feedback, mock interview labs, and direct engine-led job matching.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRODUCT OVERVIEW (FEATURES) -->
+    <section id="features">
+        <div class="section-header reveal">
+            <h2>The Tech-Stack Powering Placements</h2>
+            <p>Built with FastAPI, PostgreSQL, and LLM APIs to deliver a high-performance career ecosystem.</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card reveal">
+                <div class="f-icon">📄</div>
+                <h3>AI Resume Analyzer</h3>
+                <p>Go beyond simple keywords. Our NLP engine evaluates project impact and technical depth to bypass modern ATS filters.</p>
+            </div>
+            <div class="feature-card reveal">
+                <div class="f-icon">🎙️</div>
+                <h3>AI Interview Trainer</h3>
+                <p>Interactive voice-enabled sessions that train you for company-specific technical rounds and behavioral cues.</p>
+            </div>
+            <div class="feature-card reveal">
+                <div class="f-icon">⚙️</div>
+                <h3>Job Matching Engine</h3>
+                <p>Automatically maps student skill vectors to real-time market requirements and open vacancies across India.</p>
+            </div>
+            <div class="feature-card reveal">
+                <div class="f-icon">📊</div>
+                <h3>Tracking Dashboard</h3>
+                <p>A comprehensive visual center for students to track application status and for colleges to monitor batch performance.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- DASHBOARD SHOWCASE -->
+    <section id="dashboard" style="background: rgba(255,255,255,0.01);">
+        <div class="showcase-grid">
+            <div class="reveal">
+                <div class="hero-badge" style="background: rgba(16, 185, 129, 0.1); color: var(--accent);">FOR STUDENTS & COLLEGES</div>
+                <h2 style="font-size: 2.5rem; margin-bottom: 1.5rem;">Visual Placement Tracking.</h2>
+                <p style="color: var(--text-dim); margin-bottom: 2rem;">Real-time analytics for placement officers to identify at-risk students and celebrate success stories before the hiring season peaks.</p>
+                
+                <div style="margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.8rem;"><span>Interview Readiness Score</span><span>94%</span></div>
+                    <div class="stats-bar"><div class="stats-progress" style="width: 94%; background: var(--primary);"></div></div>
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.8rem;"><span>Batch Success Probability</span><span>78%</span></div>
+                    <div class="stats-bar"><div class="stats-progress" style="width: 78%; background: var(--secondary);"></div></div>
+                </div>
+            </div>
+            <div class="ui-preview reveal">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 20px; font-weight: 800; font-size: 0.7rem;">
+                    <span>PLACEMENT OFFICER PORTAL</span>
+                    <span style="color: var(--accent);">LIVE BATCH: 2026</span>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                    <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; text-align: center;">
+                        <p style="font-size: 1.2rem; font-weight: 800;">450</p>
+                        <p style="font-size: 0.6rem; color: var(--text-dim);">Resumes Optimized</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; text-align: center;">
+                        <p style="font-size: 1.2rem; font-weight: 800;">1.2k</p>
+                        <p style="font-size: 0.6rem; color: var(--text-dim);">Interviews Trained</p>
+                    </div>
+                </div>
+                <div style="height: 100px; background: rgba(255,255,255,0.02); border-radius: 12px; display: flex; align-items: flex-end; gap: 8px; padding: 10px;">
+                    <div style="flex: 1; height: 30%; background: var(--primary); border-radius: 3px;"></div>
+                    <div style="flex: 1; height: 60%; background: var(--primary); border-radius: 3px;"></div>
+                    <div style="flex: 1; height: 45%; background: var(--primary); border-radius: 3px;"></div>
+                    <div style="flex: 1; height: 85%; background: var(--accent); border-radius: 3px;"></div>
+                    <div style="flex: 1; height: 70%; background: var(--primary); border-radius: 3px;"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BUSINESS MODEL SECTION -->
+    <section>
+        <div class="model-section reveal">
+            <div class="section-header" style="margin-bottom: 3rem;">
+                <h2>Sustainable Scaling</h2>
+                <p>Our business model is designed for both individual growth and institutional success.</p>
+            </div>
+            <div class="model-grid">
+                <div class="model-item">
+                    <h4>Market Opportunity</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-dim);">India's CareerTech market is booming. We target the millions of graduates who fall through the gaps of traditional placement cells.</p>
+                </div>
+                <div class="model-item">
+                    <h4>Freemium SaaS</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-dim);">Basic resume analysis and roadmap access are free. Advanced AI interview simulations and matching require a subscription.</p>
+                </div>
+                <div class="model-item">
+                    <h4>B2B Sales</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-dim);">Colleges purchase enterprise licenses to provide the AI Agent to every student while gaining macro-analytics for their department.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section id="testimonials">
+        <div class="section-header reveal">
+            <h2>Success Stories</h2>
+        </div>
+        <div class="testi-grid">
+            <div class="testi-card reveal">
+                <p>"Zenith's AI Interview Trainer felt exactly like my actual Amazon round. The behavioral feedback was spot on."</p>
+                <div class="testi-user">
+                    <div class="avatar">RS</div>
+                    <div><p style="font-weight: 700;">Rahul S.</p><p style="font-size: 0.7rem; color: var(--text-dim);">Placed @ Amazon India</p></div>
+                </div>
+            </div>
+            <div class="testi-card reveal">
+                <p>"As a Placement Officer, Zenith allowed me to track 500+ students' readiness in one click. Highly recommend."</p>
+                <div class="testi-user">
+                    <div class="avatar">DK</div>
+                    <div><p style="font-weight: 700;">Dr. Khanna</p><p style="font-size: 0.7rem; color: var(--text-dim);">HOD, Career Cell</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <a href="#" class="logo" style="margin-bottom: 1rem;">
+                    <div class="logo-icon"></div>
+                    Zenith.ai
+                </a>
+                <p style="color: var(--text-dim); font-size: 0.9rem;">Empowering India's graduates with AI-native career intelligence. Scalable. Personal. Powerful.</p>
+                <div class="social-links">
+                    <a href="#" class="social-icon">in</a>
+                    <a href="#" class="social-icon">𝕏</a>
+                    <a href="#" class="social-icon">git</a>
+
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Product</h4>
+                <ul>
+                    <li><a href="#">Resume Analyzer</a></li>
+                    <li><a href="#">Interview Trainer</a></li>
+                    <li><a href="#">Matching Engine</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Partners</h4>
+                <ul>
+                    <li><a href="#">College B2B</a></li>
+                    <li><a href="#">Corporate Hiring</a></li>
+                    <li><a href="#">Pricing Models</a></li>
+                </ul>
+            </div>
+            <div class="footer-col" id="contact">
+                <h4>Contact</h4>
+                <ul>
+                    <li style="color: var(--text-dim); font-size: 0.9rem;">vision@zenith.ai</li>
+                    <li style="color: var(--text-dim); font-size: 0.9rem;">+91 422 2345 678</li>
+                    <li style="color: var(--text-dim); font-size: 0.9rem;">Innovation Center, Coimbatore</li>
+                </ul>
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--glass-border); color: var(--text-dim); font-size: 0.8rem;">
+            © 2026 Zenith AI Career Technologies. Designed for Hackathon Assessment.
+        </div>
+    </footer>
+
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('active');
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
