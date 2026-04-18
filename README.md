@@ -1,7 +1,7 @@
 # Zenith.ai Landing Page
 
 ## 🚀 Live Demo
-https://yourusername.github.io/zenith-ai-landing-page/
+https://harriinii.github.io/zenith-ai-landing-page/
 
 ## 📌 Description
 A responsive AI-powered placement platform landing page built for hackathon assessment.
